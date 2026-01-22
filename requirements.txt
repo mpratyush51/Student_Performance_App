@@ -1,0 +1,8 @@
+pandas
+numpy
+matplotlib
+seaborn
+scikit_learn==1.8.0
+jupyter
+ipykernel
+pickle
