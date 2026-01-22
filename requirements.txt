@@ -2,7 +2,7 @@ pandas
 numpy
 matplotlib
 seaborn
-scikit_learn==1.8.0
+scikit-learn==1.8.0gid add
 jupyter
 ipykernel
 pickle
