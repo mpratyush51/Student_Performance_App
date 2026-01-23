@@ -3,6 +3,16 @@ import pandas as pd
 import numpy as np
 import pickle 
 from sklearn.preprocessing import StandardScaler,LabelEncoder
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+
+uri = "mongodb+srv://pratyushm555:Krishnaisgod@cluster0.skllidd.mongodb.net/?appName=Cluster0"
+
+# Create a new client and connect to the server
+client = MongoClient(uri, server_api=ServerApi('1'))
+
+db = client['Student']
+collection = db["student_performance"]
 
 @st.cache_resource  # This tells Streamlit: "Load this once and remember it!"
 def load_model():
@@ -81,6 +91,21 @@ def main():
         try:
             prediction = predict_data(data=user_data)
             # prediction is usually an array, so we take the first element [0]
+            result_value = float(prediction.item())
+
+            # 2. Create a clean copy for MongoDB
+            # MongoDB doesn't like it if 'user_data' contains NumPy types from the label encoder
+            db_record = {
+                "Hours Studied": int(study_hours),
+                "Previous Scores": int(prev_scores),
+                "Extracurricular Activities": extra,
+                "Sleep Hours": int(sleep_hours),
+                "Sample Question Papers Practiced": int(paper_solved),
+                "Prediction": result_value
+            }
+
+            collection.insert_one(db_record)
+            
             st.success(f"### Predicted Performance Index: {prediction[0]:.2f}")
         except Exception as e:
             st.error(f"Error during prediction: {e}")

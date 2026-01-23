@@ -1,0 +1,10 @@
+# Secret files containing passwords
+mongodb_connect.py
+.streamlit/
+
+# Python internal files
+__pycache__/
+*.pyc
+
+# Virtual environments
+myvenv/
