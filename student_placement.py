@@ -10,14 +10,36 @@ from dotenv import load_dotenv
 
 # 1. Load the variables from the .env file into the system environment
 load_dotenv()
+# 2. Database Connection Logic (Handled safely)
+@st.cache_resource
+def get_db_collection():
+    # Try Streamlit Secrets first (Live), then fall back to environment variables (Local)
+    uri = st.secrets.get("MONGODB_URI") or os.getenv("URI")
+    
+    if not uri:
+        st.error("Missing MongoDB URI! Please check Streamlit Secrets or your .env file.")
+        st.stop()
+        
+    try:
+        client = MongoClient(uri, server_api=ServerApi('1'))
+        # Ping to verify connection
+        client.admin.command('ping')
+        db = client['Student']
+        return db["student_performance"]
+    except Exception as e:
+        st.error(f"MongoDB Connection Failed: {e}")
+        st.stop()
 
-# 2. Grab the URI using os.getenv
-uri = os.getenv("URI")
-# Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
+# Initialize the collection
+collection = get_db_collection()
 
-db = client['Student']
-collection = db["student_performance"]
+# # 2. Grab the URI using os.getenv
+# uri = os.getenv("URI")
+# # Create a new client and connect to the server
+# client = MongoClient(uri, server_api=ServerApi('1'))
+
+# db = client['Student']
+# collection = db["student_performance"]
 
 @st.cache_resource  # This tells Streamlit: "Load this once and remember it!"
 def load_model():
