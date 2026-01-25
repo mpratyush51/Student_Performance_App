@@ -5,9 +5,14 @@ import pickle
 from sklearn.preprocessing import StandardScaler,LabelEncoder
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+import os
+from dotenv import load_dotenv
 
-uri = "mongodb+srv://pratyushm555:Krishnaisgod@cluster0.skllidd.mongodb.net/?appName=Cluster0"
+# 1. Load the variables from the .env file into the system environment
+load_dotenv()
 
+# 2. Grab the URI using os.getenv
+uri = os.getenv("URI")
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
 
