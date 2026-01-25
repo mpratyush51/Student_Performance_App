@@ -1,2 +1,3 @@
 scikit-learn==1.8.0
 pymongo
+python-dotenv
